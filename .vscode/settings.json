@@ -1,4 +1,0 @@
-{
-    "rust-analyzer.checkOnSave": false,
-    "rust-analyzer.check.targets": null,
-}

@@ -27,10 +27,10 @@ pub enum Color {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
-struct ColorCode(u8);
+pub struct ColorCode(u8);
 
 impl ColorCode {
-  fn new(foreground: Color, background: Color) -> ColorCode {
+  pub fn new(foreground: Color, background: Color) -> ColorCode {
     ColorCode((background as u8) << 4 | (foreground as u8))
   }
 }
@@ -128,13 +128,87 @@ macro_rules! print {
 }
 
 #[macro_export]
+macro_rules! print_color {
+    ($color:expr, $($arg:tt)*) => ($crate::vga_buffer::_print_color(format_args!($($arg)*), $color));
+}
+
+#[macro_export]
+macro_rules! println_color {
+    ($color:expr, $($arg:tt)*) => ($crate::vga_buffer::_print_color(format_args!(concat!($($arg)*, "\n")), $color));
+}
+
+#[macro_export]
 macro_rules! println {
     () => ($crate::print!("\n"));
     ($($arg:tt)*) => ($crate::print!("{}\n", format_args!($($arg)*)));
 }
 
+/// Prints a debug message to the screen
+pub fn info(text: &str) {
+  print_color!(ColorCode::new(Color::LightGreen, Color::Black), "[INFO] ");
+  println!("{}", text);
+}
+
+pub fn infov(text: &str, new_line: bool) {
+  if new_line {
+    print_color!(ColorCode::new(Color::LightGreen, Color::Black), "[INFO] ");
+    println!("{}", text);
+  } else {
+    print_color!(ColorCode::new(Color::LightGreen, Color::Black), "[INFO] ");
+    print!("{}", text);
+  }
+}
+
+/// Prints a warning message to the screen
+pub fn warn(text: &str) {
+  print_color!(ColorCode::new(Color::Yellow, Color::Black), "[WARN] ");
+  println!("{}", text);
+}
+
+/// Prints an error message to the screen
+pub fn error(text: &str) {
+  print_color!(ColorCode::new(Color::Red, Color::Black), "[ERROR] ");
+  println!("{}", text);
+}
+
 #[doc(hidden)]
 pub fn _print(args: fmt::Arguments) {
   use core::fmt::Write;
-  WRITER.lock().write_fmt(args).unwrap();
+  use x86_64::instructions::interrupts;
+  interrupts::without_interrupts(|| {
+    WRITER.lock().write_fmt(args).unwrap();
+  });
+}
+
+#[doc(hidden)]
+pub fn _print_color(args: fmt::Arguments, color: ColorCode) {
+  use core::fmt::Write;
+  use x86_64::instructions::interrupts;
+  interrupts::without_interrupts(|| {
+    WRITER.lock().color_code = color;
+    WRITER.lock().write_fmt(args).unwrap();
+    WRITER.lock().color_code = ColorCode::new(Color::White, Color::Black);
+  });
+}
+
+// Tests for the VGA buffer
+#[test_case]
+fn test_println_simple() {
+  println!("test_println_simple output");
+}
+
+#[test_case]
+fn test_println_output() {
+  use core::fmt::Write;
+  use x86_64::instructions::interrupts;
+
+  let s = "Some test string that fits on a single line";
+  interrupts::without_interrupts(|| {
+    let mut writer = WRITER.lock();
+    writeln!(writer, "\n{}", s).expect("writeln failed");
+    for (i, c) in s.chars().enumerate() {
+      let screen_char = writer.buffer.chars[BUFFER_HEIGHT - 2][i].read();
+      assert_eq!(char::from(screen_char.ascii_character), c);
+    }
+  });
 }

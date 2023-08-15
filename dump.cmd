@@ -1,1 +1,0 @@
-objdump -D .\target\x86_64-stellaros\debug\bootimage-stellaros.bin -b binary -m i386:x86-64 > boot.dump.s

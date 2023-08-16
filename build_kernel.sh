@@ -20,4 +20,10 @@ mkdir build
 print_color "green" "[INFO] (build_kernel.sh) build folder created on path $(pwd)/build"
 
 print_color "green" "[INFO] (build_kernel.sh) building kernel..."
-make
+
+if make -j4; then
+    print_color "green" "[INFO] (build_kernel.sh) kernel build success."
+else
+    print_color "red" "[ERROR] (build_kernel.sh) kernel build failed."
+    exit 1
+fi

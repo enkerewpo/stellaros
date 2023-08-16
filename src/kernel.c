@@ -4,10 +4,11 @@
 
 #include "io.h"
 
-void main() {
+int main() {
   uart_init();
   uart_writeText("Hello world!\n");
   while (1) {
     // do nothing
   }
+  return 0;
 }

@@ -9,3 +9,4 @@ build/
 *.elf
 *.img
 *.bin
+.vscode-ctags

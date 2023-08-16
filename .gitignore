@@ -1,7 +1,10 @@
 build/
+.idea/
+.vscode/
 *.o
 *.so
 *.a
 *.d
 *.elf
 *.img
+*.bin

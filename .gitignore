@@ -1,6 +1,7 @@
 build/
 .idea/
 .vscode/
+.cache/
 *.o
 *.so
 *.a
@@ -8,3 +9,4 @@ build/
 *.elf
 *.img
 *.bin
+.vscode-ctags

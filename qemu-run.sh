@@ -2,7 +2,12 @@ source ./utils/color.sh
 
 print_color 'green' '[INFO] (qemu-run.sh) start making stellaros-kernel.elf...'
 
-./build_kernel.sh
+if ./build_kernel.sh; then
+    print_color 'green' '[INFO] (qemu-run.sh) stellaros-kernel.elf is successfully built.'
+else
+    print_color 'red' '[ERROR] (qemu-run.sh) failed to build stellaros-kernel.elf.'
+    exit 1
+fi
 
 cd build
 

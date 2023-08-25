@@ -20,11 +20,6 @@ mkdir build
 print_color "green" "[INFO] (build_kernel.sh) build folder created on path $(pwd)/build"
 
 print_color "green" "[INFO] (build_kernel.sh) building kernel..."
-make
-
-# objdump the kernel to see the assembly code
-print_color "green" "[INFO] (build_kernel.sh) objdumping kernel..."
-/opt/gcc-arm/gcc-arm-10.3-2021.07-x86_64-aarch64-none-elf/bin/aarch64-none-elf-objdump -d build/stellaros-kernel.elf > build/stellaros-kernel.s
 
 if make -j4; then
     print_color "green" "[INFO] (build_kernel.sh) kernel build success."
@@ -32,3 +27,7 @@ else
     print_color "red" "[ERROR] (build_kernel.sh) kernel build failed."
     exit 1
 fi
+
+# objdump the kernel to see the assembly code
+print_color "green" "[INFO] (build_kernel.sh) objdumping kernel..."
+/opt/gcc-arm/gcc-arm-10.3-2021.07-x86_64-aarch64-none-elf/bin/aarch64-none-elf-objdump -d build/stellaros-kernel.elf > build/stellaros-kernel.s

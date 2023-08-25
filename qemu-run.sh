@@ -18,7 +18,7 @@ if [ ! -f disk.img ]; then
 fi
 
 # qemu_executable_path=/usr/bin/qemu-system-aarch64
-qemu_executable_path=/opt/qemu/build/qemu-system-aarch64 # with raspi4b machine
+qemu_executable_path=/opt/qemu/build/qemu-system-aarch64 # with raspi4b machine, https://github.com/usatenko/qemu
 
 print_color 'green' '[INFO] (qemu-run.sh) starting QEMU('$qemu_executable_path')...'
 $qemu_executable_path \
@@ -29,5 +29,5 @@ $qemu_executable_path \
     -drive file=disk.img,format=qcow2 \
     -nographic \
     -serial null -chardev stdio,id=uart1 \
-    -serial chardev:uart1 -monitor none
+    -serial chardev:uart1 -monitor null
     # -s -S # this will start QEMU in debug mode, and wait for gdb to connect

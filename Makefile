@@ -5,14 +5,15 @@ SRC_DIR = src
 BUILD_DIR = build
 CFILES = $(wildcard $(SRC_DIR)/*.c)
 OFILES = $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(CFILES))
+BUILD_ARGS = -I $(INCLUDE_DIR) -g -O0
 
 all: clean stellaros-kernel.img
 
 $(BUILD_DIR)/boot.o: $(SRC_DIR)/asm/boot.s
-	$(GCCPATH)/aarch64-none-elf-gcc $(GCCFLAGS) -c $(SRC_DIR)/asm/boot.s -o $(BUILD_DIR)/boot.o
+	$(GCCPATH)/aarch64-none-elf-gcc $(GCCFLAGS) -c $(SRC_DIR)/asm/boot.s -o $(BUILD_DIR)/boot.o $(BUILD_ARGS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
-	$(GCCPATH)/aarch64-none-elf-gcc $(GCCFLAGS) -c $< -o $@ -I $(INCLUDE_DIR)
+	$(GCCPATH)/aarch64-none-elf-gcc $(GCCFLAGS) -c $< -o $@ $(BUILD_ARGS)
 
 stellaros-kernel.img: $(BUILD_DIR)/boot.o $(OFILES)
 	$(GCCPATH)/aarch64-none-elf-ld -nostdlib $(BUILD_DIR)/boot.o $(OFILES) -T src/asm/link.ld -o $(BUILD_DIR)/stellaros-kernel.elf

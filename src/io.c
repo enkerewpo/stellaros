@@ -1,16 +1,16 @@
 // GPIO
 
 enum {
-  PERIPHERAL_BASE = 0xFE000000,
-  GPFSEL0 = PERIPHERAL_BASE + 0x200000,
-  GPSET0 = PERIPHERAL_BASE + 0x20001C,
-  GPCLR0 = PERIPHERAL_BASE + 0x200028,
-  GPPUPPDN0 = PERIPHERAL_BASE + 0x2000E4
+  PERIPHERAL_BASE = 0xFE000000, // this is the base address of the peripherals
+  GPFSEL0 = PERIPHERAL_BASE + 0x200000,  // GPIO Function Select 0
+  GPSET0 = PERIPHERAL_BASE + 0x20001C,   // GPIO Pin Output Set 0
+  GPCLR0 = PERIPHERAL_BASE + 0x200028,   // GPIO Pin Output Clear 0
+  GPPUPPDN0 = PERIPHERAL_BASE + 0x2000E4 // GPIO Pin Pull-up/down Enable 0
 };
 
 enum {
   GPIO_MAX_PIN = 53,
-  GPIO_FUNCTION_ALT5 = 2,
+  GPIO_FUNCTION_ALT5 = 2, // this is the value to set for GPIO pin 14 and 15
 };
 
 enum {
@@ -63,20 +63,22 @@ void gpio_useAsAlt5(unsigned int pin_number) {
 }
 
 // UART
+// mini uart is used for the console input/output
 
 enum {
-  AUX_BASE = PERIPHERAL_BASE + 0x215000,
-  AUX_ENABLES = AUX_BASE + 4,
-  AUX_MU_IO_REG = AUX_BASE + 64,
-  AUX_MU_IER_REG = AUX_BASE + 68,
-  AUX_MU_IIR_REG = AUX_BASE + 72,
-  AUX_MU_LCR_REG = AUX_BASE + 76,
-  AUX_MU_MCR_REG = AUX_BASE + 80,
-  AUX_MU_LSR_REG = AUX_BASE + 84,
-  AUX_MU_CNTL_REG = AUX_BASE + 96,
-  AUX_MU_BAUD_REG = AUX_BASE + 104,
-  AUX_UART_CLOCK = 500000000,
-  UART_MAX_QUEUE = 16 * 1024
+  AUX_BASE = PERIPHERAL_BASE + 0x215000, // this is the base address of the
+                                         // auxiliary peripherals
+  AUX_ENABLES = AUX_BASE + 4,            // Auxiliary enables
+  AUX_MU_IO_REG = AUX_BASE + 64,         // Mini Uart I/O Data
+  AUX_MU_IER_REG = AUX_BASE + 68,        // Mini Uart Interrupt Enable
+  AUX_MU_IIR_REG = AUX_BASE + 72,        // Mini Uart Interrupt Identify
+  AUX_MU_LCR_REG = AUX_BASE + 76,        // Mini Uart Line Control
+  AUX_MU_MCR_REG = AUX_BASE + 80,        // Mini Uart Modem Control
+  AUX_MU_LSR_REG = AUX_BASE + 84,        // Mini Uart Line Status
+  AUX_MU_CNTL_REG = AUX_BASE + 96,       // Mini Uart Extra Control
+  AUX_MU_BAUD_REG = AUX_BASE + 104,      // Mini Uart Baudrate
+  AUX_UART_CLOCK = 500000000,            // Mini Uart clock
+  UART_MAX_QUEUE = 16 * 1024             // Mini Uart queue size
 };
 
 #define AUX_MU_BAUD(baud) ((AUX_UART_CLOCK / (baud * 8)) - 1)

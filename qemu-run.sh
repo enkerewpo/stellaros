@@ -22,10 +22,12 @@ qemu_executable_path=/opt/qemu/build/qemu-system-aarch64 # with raspi4b machine
 
 print_color 'green' '[INFO] (qemu-run.sh) starting QEMU('$qemu_executable_path')...'
 $qemu_executable_path \
-    -serial mon:stdio \
-    -nographic -m 4096 -smp 4 \
+    -kernel ./stellaros-kernel.elf \
     -machine raspi4b4g \
     -cpu cortex-a72 \
-    -kernel ./stellaros-kernel.elf \
+    -m 4096 -smp 4 \
     -drive file=disk.img,format=qcow2 \
-    -s -S # this will start QEMU in debug mode, and wait for gdb to connect
+    -nographic \
+    -serial null -chardev stdio,id=uart1 \
+    -serial chardev:uart1 -monitor none
+    # -s -S # this will start QEMU in debug mode, and wait for gdb to connect

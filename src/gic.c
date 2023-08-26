@@ -16,7 +16,6 @@ void enable_interrupt(unsigned int irq) {
   uart_writeText("Enable Register: ");
   uart_writeHex(enableRegister);
   uart_writeText("\n");
-  //  put32(enableRegister, 1 << offset);
   mmio_write(enableRegister, 1 << offset);
 }
 
@@ -24,7 +23,6 @@ void assign_target(unsigned int irq, unsigned int cpu) {
   unsigned int n = irq / 4;
   unsigned int targetRegister = GIC_IRQ_TARGET_BASE + (4 * n);
   // Currently we only enter the target CPU 0
-  //  put32(targetRegister, get32(targetRegister) | (1 << 8));
   mmio_write(targetRegister, mmio_read(targetRegister) | (1 << 8));
 }
 

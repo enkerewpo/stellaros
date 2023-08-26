@@ -16,6 +16,11 @@
 
 #define GIC_IRQ_TARGET_BASE (GICD_DIST_BASE + 0x00000800)
 
+#define SYSTEM_TIMER_IRQ_0 (0x60) // 96
+#define SYSTEM_TIMER_IRQ_1 (0x61) // 97
+#define SYSTEM_TIMER_IRQ_2 (0x62) // 98
+#define SYSTEM_TIMER_IRQ_3 (0x63) // 99
+
 void enable_interrupt_controller();
 
 #endif // STELLAROS_GIC_H

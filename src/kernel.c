@@ -13,17 +13,17 @@ const u64 timer_period = CLOCKHZ / 10;
 u64 timer1_val = 0;
 
 void timer_init() {
-  asm volatile("msr cntp_ctl_el0, %0" ::"r"(1)); // enable timer
-  int next = timer1_val + timer_period;
-  asm volatile("msr cntp_cval_el0, %0" ::"r"(next)); // compare value
+  asm volatile("msr cntv_ctl_el0, %0" ::"r"(1ull)); // enable timer
+  u64 next = timer1_val + timer_period;
+  asm volatile("msr cntv_cval_el0, %0" ::"r"(next)); // compare value
 }
 
 void handle_timer_1() {
   uart_writeText("Timer 1 triggered!\n");
   // update timer1_val
-  asm volatile("mrs %0, cntp_cval_el0" : "=r"(timer1_val));
-  int next = timer1_val + timer_period;
-  asm volatile("msr cntp_cval_el0, %0" ::"r"(next)); // compare value
+  asm volatile("mrs %0, cntv_cval_el0" : "=r"(timer1_val));
+  u64 next = timer1_val + timer_period;
+  asm volatile("msr cntv_cval_el0, %0" ::"r"(next)); // compare value
 }
 
 int init() {

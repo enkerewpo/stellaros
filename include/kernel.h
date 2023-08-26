@@ -8,23 +8,6 @@
 #define PERIPHERAL_BASE 0xfe000000
 #define CLOCKHZ 1000000
 
-struct timer_regs {
-  volatile unsigned int control_status;
-  volatile unsigned int counter_lo;
-  volatile unsigned int counter_hi;
-  volatile unsigned int compare[4];
-};
-
-#define REGS_TIMER ((struct timer_regs *)(PERIPHERAL_BASE + 0x00003000))
-
-enum vc_irqs {
-  SYSTEM_TIMER_IRQ_0 = 1,
-  SYSTEM_TIMER_IRQ_1 = 2,
-  SYSTEM_TIMER_IRQ_2 = 4,
-  SYSTEM_TIMER_IRQ_3 = 8,
-  AUX_IRQ = (1 << 29)
-};
-
 #define i32 int
 #define u32 unsigned int
 #define i64 long long

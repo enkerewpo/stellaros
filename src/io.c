@@ -114,3 +114,14 @@ void uart_writeText(char *buffer) {
     uart_writeByteBlockingActual(*buffer++);
   }
 }
+
+void uart_writeInt(unsigned int value) {
+  char buffer[16];
+  char *p = buffer + sizeof(buffer) - 1;
+  *p = '\0';
+  do {
+    *--p = '0' + (value % 10);
+    value /= 10;
+  } while (value);
+  uart_writeText(p);
+}

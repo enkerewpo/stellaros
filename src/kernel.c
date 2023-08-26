@@ -8,33 +8,31 @@
 
 // TIMER FUNCTIONS
 
-const unsigned int timer1_int = CLOCKHZ;
-const unsigned int timer3_int = CLOCKHZ / 4;
+const unsigned int timer_period = CLOCKHZ / 5;
 unsigned int timer1_val = 0;
-unsigned int timer3_val = 0;
 
 void timer_init() {
   timer1_val = REGS_TIMER->counter_lo;
-  timer1_val += timer1_int;
+  timer1_val += timer_period;
   REGS_TIMER->compare[1] = timer1_val;
-
-  timer3_val = REGS_TIMER->counter_lo;
-  timer3_val += timer3_int;
-  REGS_TIMER->compare[3] = timer3_val;
 }
 
 void handle_timer_1() {
-  timer1_val += timer1_int;
+  timer1_val += timer_period;
   REGS_TIMER->compare[1] = timer1_val;
   REGS_TIMER->control_status |= SYS_TIMER_IRQ_1;
-  uart_writeText("Timer 1 interrupt!\n");
+  uart_writeText("Timer 1 interrupt on hardware!\n");
 }
 
 int init() {
+
+  // init uart
   uart_init();
+
   uart_writeText("Booting StellarOS...(");
   uart_writeText(STELLAROS_VERSION_STRING_FULL);
   uart_writeText(")\n");
+
   // do init stuff here
   uart_writeText("Initializing interrupts... ");
   irq_init_vectors();
@@ -45,7 +43,7 @@ int init() {
 
   uart_writeText("Welcome to StellarOS!\n");
   while (1) {
-    // do nothing
+    // do nothing now
   }
   return 0;
 }

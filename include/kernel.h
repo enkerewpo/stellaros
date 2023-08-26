@@ -6,7 +6,7 @@
 #define STELLAROS_KERNEL_H
 
 #define PERIPHERAL_BASE 0xFE000000
-#define CLOCKHZ 1000000
+#define CLOCKHZ 1000000 // 1M
 
 struct timer_regs {
   volatile unsigned int control_status;

@@ -30,4 +30,4 @@ $qemu_executable_path \
     -nographic \
     -serial null -chardev stdio,id=uart1 \
     -serial chardev:uart1 -monitor null
-    # -s -S # this will start QEMU in debug mode, and wait for gdb to connect
+    # -s -S \

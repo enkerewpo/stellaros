@@ -1,5 +1,24 @@
+.set STACK_FRAME_SIZE, 256
+
+.set SYNC_INVALID_EL1t, 0
+.set IRQ_INVALID_EL1t, 1
+.set FIQ_INVALID_EL1t, 2
+.set ERROR_INVALID_EL1t, 3
+.set SYNC_INVALID_EL1h, 4
+.set IRQ_INVALID_EL1h, 5
+.set FIQ_INVALID_EL1h, 6
+.set ERROR_INVALID_EL1h, 7
+.set SYNC_INVALID_EL0_64, 8
+.set IRQ_INVALID_EL0_64, 9
+.set FIQ_INVALID_EL0_64, 10
+.set ERROR_INVALID_EL0_64, 11
+.set SYNC_INVALID_EL0_32, 12
+.set IRQ_INVALID_EL0_32, 13
+.set FIQ_INVALID_EL0_32, 14
+.set ERROR_INVALID_EL0_32, 15
+
 .macro kernel_entry
-	sub 	sp, sp, #256
+	sub 	sp, sp, STACK_FRAME_SIZE
 	stp 	x0, x1, [sp, #16 * 0]
 	stp 	x2, x3, [sp, #16 * 1]
 	stp	x4, x5, [sp, #16 * 2]
@@ -35,22 +54,15 @@
 	ldp	x26, x27, [sp, #16 * 13]
 	ldp	x28, x29, [sp, #16 * 14]
 	ldr	x30, [sp, #16 * 15] 
-	add	sp, sp, #256
+	add	sp, sp, STACK_FRAME_SIZE
 	eret
 .endm
 
 .macro handle_invalid_entry type
 	kernel_entry
-	// mov	x0, #\type
 	ldr	x0, =\type
 	mrs	x1, esr_el1
 	mrs	x2, elr_el1
-
-        // We could pass this to a function to print an error here
-        // e.g. bl show_invalid_entry_message
-        //
-        // For now we'll just hang
-
 	b	err_hang
 .endm
 
@@ -85,66 +97,74 @@ vectors:
 
 
 sync_invalid_el1t:
-	handle_invalid_entry  0
+	handle_invalid_entry  SYNC_INVALID_EL1t
 
 irq_invalid_el1t:
-	handle_invalid_entry  1
+	handle_invalid_entry  IRQ_INVALID_EL1t
 
 fiq_invalid_el1t:
-	handle_invalid_entry  2
+	handle_invalid_entry  FIQ_INVALID_EL1t
 
 error_invalid_el1t:
-	handle_invalid_entry  3
+	handle_invalid_entry  ERROR_INVALID_EL1t
 
 sync_invalid_el1h:
-	handle_invalid_entry  4
-
-fiq_invalid_el1h:
-	handle_invalid_entry  5
-
-error_invalid_el1h:
-	handle_invalid_entry  6
-
-sync_invalid_el0_64:
-	handle_invalid_entry  7
-
-irq_invalid_el0_64:
-	handle_invalid_entry  8
-
-fiq_invalid_el0_64:
-	handle_invalid_entry  9
-
-error_invalid_el0_64:
-	handle_invalid_entry  10
-
-sync_invalid_el0_32:
-	handle_invalid_entry  11
-
-irq_invalid_el0_32:
-	handle_invalid_entry  12
-
-fiq_invalid_el0_32:
-	handle_invalid_entry  13
-
-error_invalid_el0_32:
-	handle_invalid_entry  14
+	handle_invalid_entry  SYNC_INVALID_EL1h
 
 handle_el1_irq:
 	kernel_entry 
 	bl	handle_irq
 	kernel_exit 
 
+fiq_invalid_el1h:
+	handle_invalid_entry  FIQ_INVALID_EL1h
+
+error_invalid_el1h:
+	handle_invalid_entry  ERROR_INVALID_EL1h
+
+sync_invalid_el0_64:
+	handle_invalid_entry  SYNC_INVALID_EL0_64
+
+irq_invalid_el0_64:
+	handle_invalid_entry  IRQ_INVALID_EL0_64
+
+fiq_invalid_el0_64:
+	handle_invalid_entry  FIQ_INVALID_EL0_64
+
+error_invalid_el0_64:
+	handle_invalid_entry  ERROR_INVALID_EL0_64
+
+sync_invalid_el0_32:
+	handle_invalid_entry  SYNC_INVALID_EL0_32
+
+irq_invalid_el0_32:
+	handle_invalid_entry  IRQ_INVALID_EL0_32
+
+fiq_invalid_el0_32:
+	handle_invalid_entry  FIQ_INVALID_EL0_32
+
+error_invalid_el0_32:
+	handle_invalid_entry  ERROR_INVALID_EL0_32
+
+
 .globl err_hang
 err_hang: b err_hang
-
 
 // utils
 
 .globl irq_init_vectors
 irq_init_vectors:
     adr x0, vectors
-    msr vbar_el1, x0
+    msr vbar_el1, x0 // vector based address register, exception level 1
     ret
+
+/**
+ * DAIF(4 bit): interrupt disable flags
+ * [3]D - debug
+ * [2]A - async
+ * [1]I - irq
+ * [0]F - fiq
+ */
 
 .globl irq_enable
 irq_enable:

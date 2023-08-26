@@ -262,3 +262,7 @@ void uart_writeHex(unsigned int value) {
   *--p = '0';
   uart_writeText(p);
 }
+
+void uart_writeChar(unsigned char value) {
+  uart_writeByteBlockingActual(value);
+}

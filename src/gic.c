@@ -46,14 +46,12 @@ void enable_interrupt_controller() {
 }
 
 void handle_irq(void) {
-  //  unsigned int irq_ack_reg = get32(GICC_IAR);
   uart_writeText("Handling IRQ...\n");
   unsigned int irq_ack_reg = mmio_read(GICC_IAR);
   unsigned int irq = irq_ack_reg & 0x2FF;
   switch (irq) {
   case (SYSTEM_TIMER_IRQ_0):
     handle_timer_1();
-    //    put32(GICC_EOIR, irq_ack_reg);
     mmio_write(GICC_EOIR, irq_ack_reg);
     break;
   default:

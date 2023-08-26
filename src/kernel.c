@@ -48,8 +48,14 @@ int init() {
   uart_writeText("Interrupts initialized.\n");
   uart_writeText("Welcome to StellarOS!\n");
 
-  while (1) {
-  }
-  uart_writeText("Init done.\n");
+  // entering shell loop
+  shell_loop();
+
   return 0;
+}
+
+void __exit_kernel() {
+  uart_writeText("Exiting StellarOS...\n");
+  uart_writeText("Bye!\n");
+  asm volatile("wfi");
 }

@@ -28,3 +28,7 @@ _start:
 4:
     bl init
     b 1b
+
+.globl exit_kernel
+exit_kernel:
+    bl __exit_kernel

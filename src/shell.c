@@ -31,14 +31,18 @@ void handle_command(char *cmd) {
   if (cmd[0] == 0)
     return;
   if (so_strcmp(cmd, "help") == 0) {
-    uart_writeText("StellarOS help:\n");
-    uart_writeText("help: print this help message\n");
-    uart_writeText("version: print version information\n");
-    uart_writeText("exit: exit StellarOS\n");
+    uart_writeText("---------------------------------------------------\n");
+    uart_writeText("  StellarOS help:\n");
+    uart_writeText("---------------------------------------------------\n");
+    uart_writeText("  help        print this help message\n");
+    uart_writeText("  version     print version information\n");
+    uart_writeText("  exit        exit StellarOS\n");
+    uart_writeText("---------------------------------------------------\n");
   } else if (so_strcmp(cmd, "version") == 0) {
     uart_writeText("StellarOS version: ");
     uart_writeText(STELLAROS_VERSION_STRING_FULL);
     uart_writeText("\n");
+    uart_writeText("Written by wheatfox(enkerewpo@hotmail.com)\n");
   } else if (so_strcmp(cmd, "exit") == 0) {
     asm volatile("b exit_kernel");
   } else {

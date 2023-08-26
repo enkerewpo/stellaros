@@ -1,11 +1,11 @@
 // GPIO
 
 enum {
-  PERIPHERAL_BASE = 0xFE000000, // this is the base address of the peripherals
+  PERIPHERAL_BASE = 0xfe000000, // this is the base address of the peripherals
   GPFSEL0 = PERIPHERAL_BASE + 0x200000,  // GPIO Function Select 0
-  GPSET0 = PERIPHERAL_BASE + 0x20001C,   // GPIO Pin Output Set 0
+  GPSET0 = PERIPHERAL_BASE + 0x20001c,   // GPIO Pin Output Set 0
   GPCLR0 = PERIPHERAL_BASE + 0x200028,   // GPIO Pin Output Clear 0
-  GPPUPPDN0 = PERIPHERAL_BASE + 0x2000E4 // GPIO Pin Pull-up/down Enable 0
+  GPPUPPDN0 = PERIPHERAL_BASE + 0x2000e4 // GPIO Pin Pull-up/down Enable 0
 };
 
 enum {
@@ -123,5 +123,31 @@ void uart_writeInt(unsigned int value) {
     *--p = '0' + (value % 10);
     value /= 10;
   } while (value);
+  uart_writeText(p);
+}
+
+void uart_writeBinary(unsigned int value) {
+  char buffer[32];
+  char *p = buffer + sizeof(buffer) - 1;
+  *p = '\0';
+  do {
+    *--p = '0' + (value & 1);
+    value >>= 1;
+  } while (value);
+  uart_writeText(p);
+}
+
+void uart_writeHex(unsigned int value) {
+  char buffer[8];
+  char *p = buffer + sizeof(buffer) - 1;
+  *p = '\0';
+  do {
+    unsigned int digit = value & 0xF;
+    *--p = digit < 10 ? '0' + digit : 'a' + digit - 10;
+    value >>= 4;
+  } while (value);
+  // append 0x
+  *--p = 'x';
+  *--p = '0';
   uart_writeText(p);
 }

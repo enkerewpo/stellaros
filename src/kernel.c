@@ -3,29 +3,30 @@
 // Description: a kernel of StellarOS on Raspberry Pi 4B
 
 #include "kernel.h"
+#include "gic.h"
 #include "io.h"
 #include "version.h"
 
 // TIMER FUNCTIONS
 
-const unsigned int timer_period = CLOCKHZ / 5;
-unsigned int timer1_val = 0;
+const u64 timer_period = CLOCKHZ / 10;
+u64 timer1_val = 0;
 
 void timer_init() {
-  timer1_val = REGS_TIMER->counter_lo;
-  timer1_val += timer_period;
-  REGS_TIMER->compare[1] = timer1_val;
+  asm volatile("msr cntp_ctl_el0, %0" ::"r"(1)); // enable timer
+  int next = timer1_val + timer_period;
+  asm volatile("msr cntp_cval_el0, %0" ::"r"(next)); // compare value
 }
 
 void handle_timer_1() {
-  timer1_val += timer_period;
-  REGS_TIMER->compare[1] = timer1_val;
-  REGS_TIMER->control_status |= SYS_TIMER_IRQ_1;
-  uart_writeText("Timer 1 interrupt on hardware!\n");
+  uart_writeText("Timer 1 triggered!\n");
+  // update timer1_val
+  asm volatile("mrs %0, cntp_cval_el0" : "=r"(timer1_val));
+  int next = timer1_val + timer_period;
+  asm volatile("msr cntp_cval_el0, %0" ::"r"(next)); // compare value
 }
 
 int init() {
-
   // init uart
   uart_init();
 
@@ -34,16 +35,21 @@ int init() {
   uart_writeText(")\n");
 
   // do init stuff here
-  uart_writeText("Initializing interrupts... ");
+  uart_writeText("Initializing interrupts...\n");
+
+  // irq
   irq_init_vectors();
   enable_interrupt_controller();
   irq_enable();
-  timer_init();
-  uart_writeText("done.\n");
 
+  // timer
+  timer_init();
+
+  uart_writeText("Interrupts initialized.\n");
   uart_writeText("Welcome to StellarOS!\n");
+
   while (1) {
-    // do nothing now
   }
+  uart_writeText("Init done.\n");
   return 0;
 }

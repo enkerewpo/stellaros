@@ -63,7 +63,7 @@
 	ldr	x0, =\type
 	mrs	x1, esr_el1
 	mrs	x2, elr_el1
-	b	err_hang
+	b	err_print
 .endm
 
 .macro	ventry	label
@@ -160,10 +160,10 @@ irq_init_vectors:
 
 /**
  * DAIF(4 bit): interrupt disable flags
- * [3]D - debug
- * [2]A - async
- * [1]I - irq
- * [0]F - fiq
+ * [3]D - debug 1000
+ * [2]A - async 0100
+ * [1]I - irq	0010
+ * [0]F - fiq	0001
  */
 
 .globl irq_enable

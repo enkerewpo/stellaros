@@ -12,7 +12,7 @@ _start:
     mrs x1, mpidr_el1
     and x1, x1, #3
     cbz x1, 2f // if cpu0, jump to 2, else wait for event
-1:  
+1:
     wfe
     b 1b
 2:
@@ -28,4 +28,3 @@ _start:
 4:
     bl init
     b 1b
-    

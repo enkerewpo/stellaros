@@ -23,11 +23,11 @@ qemu_executable_path=/opt/qemu/build/qemu-system-aarch64 # with raspi4b machine,
 print_color 'green' '[INFO] (qemu-run.sh) starting QEMU('$qemu_executable_path')...'
 $qemu_executable_path \
     -kernel ./stellaros-kernel.elf \
-    -machine raspi4b4g \
+    -machine raspi4b4g -m 4096 \
     -cpu cortex-a72 \
-    -m 4096 -smp 4 \
+    -smp 4 \
     -drive file=disk.img,format=qcow2 \
     -nographic \
     -serial null -chardev stdio,id=uart1 \
     -serial chardev:uart1 -monitor null
-    # -s -S \
+

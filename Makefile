@@ -2,7 +2,7 @@ INCLUDE_DIR = include
 SRC_DIR = src
 BUILD_DIR = build
 BUILD_ARGS = -I $(INCLUDE_DIR) -g -O0
-GCCPATH = /opt/gcc-arm/gcc-arm-10.3-2021.07-x86_64-aarch64-none-elf/bin
+GCCPATH = /opt/gcc-arm/gcc-arm-10.3-2021.07-x86_64-aarch64-none-elf/bin # optional for gcc cross compiler
 
 CFILES = $(wildcard src/*.c)
 SFILES = $(wildcard src/asm/*.s)

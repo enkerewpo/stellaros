@@ -4,14 +4,17 @@
 .set IRQ_INVALID_EL1t, 1
 .set FIQ_INVALID_EL1t, 2
 .set ERROR_INVALID_EL1t, 3
+
 .set SYNC_INVALID_EL1h, 4
 .set IRQ_INVALID_EL1h, 5
 .set FIQ_INVALID_EL1h, 6
 .set ERROR_INVALID_EL1h, 7
+
 .set SYNC_INVALID_EL0_64, 8
 .set IRQ_INVALID_EL0_64, 9
 .set FIQ_INVALID_EL0_64, 10
 .set ERROR_INVALID_EL0_64, 11
+
 .set SYNC_INVALID_EL0_32, 12
 .set IRQ_INVALID_EL0_32, 13
 .set FIQ_INVALID_EL0_32, 14
@@ -169,9 +172,11 @@ irq_init_vectors:
 .globl irq_enable
 irq_enable:
     msr daifclr, #2
+	msr daifclr, #1
     ret
 
 .globl irq_disable
 irq_disable:
     msr daifset, #2
+	msr daifset, #1
     ret

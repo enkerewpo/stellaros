@@ -49,20 +49,40 @@ int init() {
   int f = 1;
 
   while (1) {
-    if (REGS_TIMER->counter_lo % 100000 == 0) {
-      uart_writeText("COUNT: ");
-      uart_writeInt(REGS_TIMER->counter_lo);
+    int cnt_vct = 0;
+    int cntv_cval = 0;
+    int cntv_ctl = 0;
+    asm volatile("mrs %0, cntvct_el0" : "=r"(cnt_vct));
+    if (cnt_vct % 50000 == 0) {
+      //      uart_writeText("COUNT: ");
+      //      uart_writeInt(REGS_TIMER->counter_lo);
+      //      uart_writeText(" ");
+      //      uart_writeText("COMPARE: ");
+      //      uart_writeInt(REGS_TIMER->compare[1]);
+      //      uart_writeText(" ");
+      //      uart_writeText("CONTROL_STATUS: ");
+      //      uart_writeBinary(REGS_TIMER->control_status);
+      //      uart_writeText("\n");
+      // check CNT_VCT and CNTV_CVAL, CNTV_CTL
+      uart_writeText("CNT_VCT: ");
+      uart_writeInt(cnt_vct);
       uart_writeText(" ");
-      uart_writeText("COMPARE: ");
-      uart_writeInt(REGS_TIMER->compare[1]);
+      asm volatile("mrs %0, cntv_cval_el0" : "=r"(cntv_cval));
+      uart_writeText("CNTV_CVAL: ");
+      uart_writeInt(cntv_cval);
       uart_writeText(" ");
-      uart_writeText("CONTROL_STATUS: ");
-      uart_writeBinary(REGS_TIMER->control_status);
+      asm volatile("mrs %0, cntv_ctl_el0" : "=r"(cntv_ctl));
+      uart_writeText("CNTV_CTL: ");
+      uart_writeBinary(cntv_ctl);
       uart_writeText("\n");
     }
-    if (f && REGS_TIMER->counter_lo >= REGS_TIMER->compare[1] * 2) {
+    if (f && cntv_cval && cnt_vct >= cntv_cval * 2) {
       uart_writeText("Timer 1 Failed To Trigger a Interrupt!\n");
       f = 0;
+    }
+    if (cntv_cval && cnt_vct >= cntv_cval * 3) {
+      uart_writeText("Quitting loop...\n");
+      break;
     }
   }
   // entering shell loop

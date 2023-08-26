@@ -1,7 +1,5 @@
 // GPIO
 
-#include "io.h"
-
 #define PERIPHERAL_BASE 0xfe000000
 
 enum {

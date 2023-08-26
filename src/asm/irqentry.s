@@ -172,11 +172,9 @@ irq_init_vectors:
 .globl irq_enable
 irq_enable:
     msr daifclr, #2
-	msr daifclr, #1
     ret
 
 .globl irq_disable
 irq_disable:
     msr daifset, #2
-	msr daifset, #1
     ret

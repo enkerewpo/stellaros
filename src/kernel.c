@@ -1,6 +1,6 @@
 // Created by: wheatfox
 // Created on: 2023/8/16
-// Description: a kernel for StellarOS on Raspberry Pi 4B
+// Description: a kernel of StellarOS on Raspberry Pi 4B
 
 #include "kernel.h"
 #include "io.h"

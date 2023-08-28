@@ -10,4 +10,6 @@
 #define i64 long long
 #define u64 unsigned long long
 
+void __exit_kernel();
+
 #endif // STELLAROS_KERNEL_H

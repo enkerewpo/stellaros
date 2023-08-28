@@ -1,6 +1,4 @@
 #include "interrupt.h"
-#include "io.h"
-#include "kernel.h"
 
 #define CORE0_TIMER_IRQCNTL ((volatile u32 *)(0x40000040))
 
@@ -21,13 +19,13 @@ void timer_init() {
   // print freq from CNTFRQ
   u64 cntfrq = 0;
   asm volatile("mrs %0, cntfrq_el0" : "=r"(cntfrq));
-  uart_writeText("CNTFRQ: ");
-  uart_writeInt(cntfrq);
-  uart_writeText("\n");
+  print("CNTFRQ: ");
+  print_int(cntfrq);
+  print("\n");
 }
 
 void handle_timer_1() {
-  uart_writeText("Timer 1 triggered!\n");
+  print("Timer 1 triggered!\n");
   __exit_kernel();
 }
 
@@ -39,22 +37,31 @@ void enable_interrupt_controller() {
   val |= 1 << 1;
   val |= 1 << 0;
   mmio_write(TIMER_CNTRL1, val);
-  // set IRQ1_ENABLE0 to full 1
-  val = 0xffffffff;
-  mmio_write(IRQ0_SET_EN_1, val);
+  mmio_write(IRQ0_SET_EN_2, (1 << 0));
   // read back IRQ1_ENABLE0
-  int tmp = mmio_read(IRQ0_SET_EN_1);
-  uart_writeText("IRQ0_SET_EN_1: ");
-  uart_writeBinary(tmp);
-  uart_writeText("\n");
-  // nCNTVIRQ
+  int tmp = mmio_read(IRQ0_SET_EN_2);
+  print("IRQ0_SET_EN_2: ");
+  print_binary(tmp);
+  print("\n");
   /* nCNTVIRQ routing to CORE0.*/
   *CORE0_TIMER_IRQCNTL = 1 << 3;
 }
 
 void handle_irq() {
-  uart_writeText("IRQ triggered!\n");
+  print("IRQ triggered!\n");
   handle_timer_1();
 }
 
-void err_print() { uart_writeText("[ERROR] Something went wrong!\n"); }
+void handle_invalid_interrupt(int type, int esr, int elr) {
+  print("Invalid interrupt!\n");
+  print("Type: ");
+  print_int(type);
+  print("\n");
+  print("ESR: ");
+  print_int(esr);
+  print("\n");
+  print("ELR: ");
+  print_int(elr);
+  print("\n");
+  __exit_kernel();
+}

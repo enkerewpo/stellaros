@@ -1,10 +1,10 @@
 #include "shell.h"
-#include "io.h"
+#include "io_virt.h"
 #include "version.h"
 
 char buffer[2048]; // for shell input
 
-void print_prefix() { uart_writeText("StellarOS> "); }
+void print_prefix() { print("StellarOS> "); }
 
 int so_strcmp(char *a, char *b) {
   int i = 0;
@@ -31,24 +31,24 @@ void handle_command(char *cmd) {
   if (cmd[0] == 0)
     return;
   if (so_strcmp(cmd, "help") == 0) {
-    uart_writeText("---------------------------------------------------\n");
-    uart_writeText("  StellarOS help:\n");
-    uart_writeText("---------------------------------------------------\n");
-    uart_writeText("  help        print this help message\n");
-    uart_writeText("  version     print version information\n");
-    uart_writeText("  exit        exit StellarOS\n");
-    uart_writeText("---------------------------------------------------\n");
+    print("---------------------------------------------------\n");
+    print("  StellarOS help:\n");
+    print("---------------------------------------------------\n");
+    print("  help        print this help message\n");
+    print("  version     print version information\n");
+    print("  exit        exit StellarOS\n");
+    print("---------------------------------------------------\n");
   } else if (so_strcmp(cmd, "version") == 0) {
-    uart_writeText("StellarOS version: ");
-    uart_writeText(STELLAROS_VERSION_STRING_FULL);
-    uart_writeText("\n");
-    uart_writeText("Written by wheatfox(enkerewpo@hotmail.com)\n");
+    print("StellarOS version: ");
+    print(STELLAROS_VERSION_STRING_FULL);
+    print("\n");
+    print("Written by wheatfox(enkerewpo@hotmail.com)\n");
   } else if (so_strcmp(cmd, "exit") == 0) {
     asm volatile("b exit_kernel");
   } else {
-    uart_writeText("Unknown command: ");
-    uart_writeText(cmd);
-    uart_writeText("\n");
+    print("Unknown command: ");
+    print(cmd);
+    print("\n");
   }
 }
 
@@ -57,21 +57,21 @@ void shell_loop() {
     print_prefix();
     int i = 0;
     while (1) {
-      char c = uart_readByte();
+      char c = getchar();
       if (c == 13) {
-        uart_writeText("\n");
+        print("\n");
         handle_command(buffer);
         so_memset(buffer, 0, 2048);
         break;
       } else if (c == 127) {
         if (i > 0) {
-          uart_writeText("\b \b");
+          print("\b \b");
           i--;
         }
       } else if (c >= 32) {
         if (i < 2047) {
           buffer[i++] = c;
-          uart_writeChar(c);
+          putchar(c);
         }
       }
     }

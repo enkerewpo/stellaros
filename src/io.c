@@ -1,4 +1,6 @@
-// GPIO
+#ifdef IO_RASPI4B
+
+#include "io.h"
 
 #define PERIPHERAL_BASE 0xfe000000
 
@@ -264,3 +266,5 @@ void uart_writeHex(unsigned int value) {
 void uart_writeChar(unsigned char value) {
   uart_writeByteBlockingActual(value);
 }
+
+#endif // IO_RASPI4B

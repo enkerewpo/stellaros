@@ -5,6 +5,9 @@
 #ifndef STELLAROS_INTERRUPT_H
 #define STELLAROS_INTERRUPT_H
 
+#include "kernel.h"
+#include "io_virt.h"
+
 #define PERIPHERAL_BASE 0xfe000000
 #define CLOCKHZ 1000000
 
@@ -96,5 +99,6 @@ void irq_disable();
 void timer_init();
 void handle_timer_1();
 void enable_interrupt_controller();
+
 
 #endif // STELLAROS_INTERRUPT_H

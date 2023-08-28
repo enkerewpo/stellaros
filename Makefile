@@ -8,7 +8,7 @@ CFILES = $(wildcard src/*.c)
 SFILES = $(wildcard src/asm/*.s)
 OFILES = $(CFILES:.c=.o) $(SFILES:.s=.o)
 LLVMPATH = /bin
-CLANGFLAGS = -Wall -O0 -nostdlib -mcpu=cortex-a72+nosimd
+CLANGFLAGS = -Wall -O0 -nostdlib -mcpu=cortex-a72+nosimd -ffreestanding
 
 all: clean stellaros-kernel.img
 

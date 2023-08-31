@@ -1,5 +1,5 @@
 SECTIONS {
-    . = 0x40100000; /* start address */
+    . = 0x41000000; /* start address */
     .text : {
         KEEP(*(.text.boot))
         *(.text .text.* .gnu.linkonce.t.*)

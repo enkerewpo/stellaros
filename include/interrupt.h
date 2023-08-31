@@ -5,10 +5,11 @@
 #ifndef STELLAROS_INTERRUPT_H
 #define STELLAROS_INTERRUPT_H
 
-#include "kernel.h"
 #include "io_virt.h"
+#include "kernel.h"
 
-#define PERIPHERAL_BASE 0xfe000000
+// #define PERIPHERAL_BASE 0xfe000000 // raspi4b's peripheral base
+#define PERIPHERAL_BASE 0x08000000 // qemu's peripheral base for virt
 #define CLOCKHZ 1000000
 
 struct timer_regs {
@@ -20,7 +21,7 @@ struct timer_regs {
 
 #define REGS_TIMER ((struct timer_regs *)(PERIPHERAL_BASE + 0x00003000))
 
-#define ARM_LOCAL_BASE 0xff800000
+#define ARM_LOCAL_BASE 0xff800000 // raspi4b's arm local base
 
 enum ARM_LOCAL {
   ARM_CONTROL = ARM_LOCAL_BASE,
@@ -45,7 +46,7 @@ enum ARM_LOCAL {
   FIQ_SOURCE3 = ARM_LOCAL_BASE + 0x7c,
 };
 
-#define ARMC_BASE 0x7e00b000
+#define ARMC_BASE 0x7e00b000 // raspi4b's arm core base
 
 enum ARMC {
   IRQ0_PENDING0 = ARMC_BASE + 0x200,
@@ -93,12 +94,57 @@ enum ARMC {
   IRQ3_CLR_EN_2 = ARMC_BASE + 0x2e8,
 };
 
+// this is for qemu virt's GICv2
+#define GICv2_BASE 0x8000000
+#define GICv2_DIST_BASE 0x8000000
+#define GICv2_CPU_BASE 0x8010000
+enum GICv2 {
+  GICD_CTLR = GICv2_DIST_BASE + 0x000,  // Distributor Control Register
+  GICD_TYPER = GICv2_DIST_BASE + 0x004, // Interrupt Controller Type Register
+  GICD_IIDR = GICv2_DIST_BASE + 0x008, // Distributor Implementer Identification
+                                       // Register
+  GICD_IGROUPRn = GICv2_DIST_BASE + 0x080,   // Interrupt Group Registers
+  GICD_ISENABLERn = GICv2_DIST_BASE + 0x100, // Interrupt Set-Enable Registers
+  GICD_ICENABLERn = GICv2_DIST_BASE + 0x180, // Interrupt Clear-Enable Registers
+  GICD_ISPENDRn = GICv2_DIST_BASE + 0x200,   // Interrupt Set-Pending Registers
+  GICD_ICPENDRn = GICv2_DIST_BASE + 0x280, // Interrupt Clear-Pending Registers
+  GICD_ISACTIVERn = GICv2_DIST_BASE + 0x300, // Interrupt Set-Active Registers
+  GICD_ICACTIVERn = GICv2_DIST_BASE + 0x380, // Interrupt Clear-Active Registers
+  GICD_IPRIORITYRn = GICv2_DIST_BASE + 0x400, // Interrupt Priority Registers
+  GICD_ITARGETSRn =
+      GICv2_DIST_BASE + 0x800, // Interrupt Processor Targets Registers
+  GICD_ICFGRn = GICv2_DIST_BASE + 0xc00, // Interrupt Configuration Registers
+  GICD_NSACRn = GICv2_DIST_BASE + 0xe00, // Non-secure Access Control Registers
+  GICD_SGIR = GICv2_DIST_BASE + 0xf00, // Software Generated Interrupt Register
+  GICD_CPENDSGIRn = GICv2_DIST_BASE + 0xf10, // SGI Clear-Pending Registers
+  GICD_SPENDSGIRn = GICv2_DIST_BASE + 0xf20, // SGI Set-Pending Registers
+
+  GICC_CTLR = GICv2_CPU_BASE + 0x0000,   // CPU Interface Control Register
+  GICC_PMR = GICv2_CPU_BASE + 0x0004,    // Interrupt Priority Mask Register
+  GICC_BPR = GICv2_CPU_BASE + 0x0008,    // Binary Point Register
+  GICC_IAR = GICv2_CPU_BASE + 0x000c,    // Interrupt Acknowledge Register
+  GICC_EOIR = GICv2_CPU_BASE + 0x0010,   // End of Interrupt Register
+  GICC_RPR = GICv2_CPU_BASE + 0x0014,    // Running Priority Register
+  GICC_HPPIR = GICv2_CPU_BASE + 0x0018,  // Highest Priority Pending Interrupt
+                                         // Register
+  GICC_ABPR = GICv2_CPU_BASE + 0x001c,   // Aliased Binary Point Register
+  GICC_AIAR = GICv2_CPU_BASE + 0x0020,   // Aliased Interrupt Acknowledge
+                                         // Register
+  GICC_AEOIR = GICv2_CPU_BASE + 0x0024,  // Aliased End of Interrupt Register
+  GICC_AHPPIR = GICv2_CPU_BASE + 0x0028, // Aliased Highest Priority Pending
+                                         // Interrupt Register
+  GICC_APRn = GICv2_CPU_BASE + 0x00d0,   // Active Priorities Registers
+  GICC_NSAPRn = GICv2_CPU_BASE + 0x00e0, // Non-secure Active Priorities
+                                         // Registers
+  GICC_IIDR = GICv2_CPU_BASE + 0x00fc, // CPU Interface Identification Register
+  GICC_DIR = GICv2_CPU_BASE + 0x1000,  // Deactivate Interrupt Register
+};
+
 void irq_init_vectors();
 void irq_enable();
 void irq_disable();
 void timer_init();
 void handle_timer_1();
 void enable_interrupt_controller();
-
 
 #endif // STELLAROS_INTERRUPT_H

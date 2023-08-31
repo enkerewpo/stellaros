@@ -1,4 +1,4 @@
-#ifdef IO_RASPI4B
+#if 0
 
 #include "io.h"
 
@@ -266,5 +266,12 @@ void uart_writeHex(unsigned int value) {
 void uart_writeChar(unsigned char value) {
   uart_writeByteBlockingActual(value);
 }
+
+void putchar(char c) { uart_writeChar(c); }
+void print(const char *s) { uart_writeText((char *)s); }
+void print_int(unsigned int value) { uart_writeInt(value); }
+void print_binary(unsigned int value) { uart_writeBinary(value); }
+void print_hex(unsigned int value) { uart_writeHex(value); }
+unsigned char getchar() { return uart_readByte(); }
 
 #endif // IO_RASPI4B

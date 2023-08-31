@@ -112,7 +112,7 @@ error_invalid_el1t:
 	handle_invalid_entry  ERROR_INVALID_EL1t
 
 sync_invalid_el1h:
-	handle_invalid_entry  SYNC_INVALID_EL1h
+	handle_invalid_entry SYNC_INVALID_EL1h
 
 handle_el1_irq:
 	kernel_entry 

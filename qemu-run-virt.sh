@@ -21,7 +21,7 @@ qemu_executable_path=/usr/bin/qemu-system-aarch64
 
 print_color 'green' '[INFO] (qemu-run.sh) starting QEMU('$qemu_executable_path') with QEMU ARM Virt Machine...'
 $qemu_executable_path \
-    -kernel ./stellaros-kernel.elf \
+    -kernel ./stellaros-kernel.img \
     -machine virt,gic-version=2 \
     -m 1024 \
     -cpu cortex-a72 \
@@ -29,3 +29,5 @@ $qemu_executable_path \
     -drive file=disk.img,format=qcow2 \
     -nographic \
     -serial mon:stdio \
+    -D qemu.log \
+    # -d trace:*

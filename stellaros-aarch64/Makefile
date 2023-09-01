@@ -22,7 +22,7 @@ QEMU_MISSING_STRING = "This board is not yet supported for QEMU."
 
 ifeq ($(BSP),rpi3)
     TARGET            = aarch64-unknown-none-softfloat
-    KERNEL_BIN        = kernel8.img
+    KERNEL_BIN        = stellaros-kenrel-raspi3b.img
     QEMU_BINARY       = qemu-system-aarch64
     QEMU_MACHINE_TYPE = raspi3b
     QEMU_RELEASE_ARGS = -d in_asm -display none
@@ -33,7 +33,7 @@ ifeq ($(BSP),rpi3)
     RUSTC_MISC_ARGS   = -C target-cpu=cortex-a53
 else ifeq ($(BSP),rpi4)
     TARGET            = aarch64-unknown-none-softfloat
-    KERNEL_BIN        = kernel8.img
+    KERNEL_BIN        = stellaros-kenrel-raspi4b.img
     QEMU_BINARY       = qemu-system-aarch64
     QEMU_MACHINE_TYPE =
     QEMU_RELEASE_ARGS = -d in_asm -display none
@@ -47,8 +47,6 @@ endif
 # Export for build.rs.
 export LD_SCRIPT_PATH
 
-
-
 ##--------------------------------------------------------------------------------------------------
 ## Targets and Prerequisites
 ##--------------------------------------------------------------------------------------------------
@@ -60,8 +58,6 @@ KERNEL_ELF      = target/$(TARGET)/release/kernel
 # This parses cargo's dep-info file.
 # https://doc.rust-lang.org/cargo/guide/build-cache.html#dep-info-files
 KERNEL_ELF_DEPS = $(filter-out %: ,$(file < $(KERNEL_ELF).d)) $(KERNEL_MANIFEST) $(LAST_BUILD_CONFIG)
-
-
 
 ##--------------------------------------------------------------------------------------------------
 ## Command building blocks
@@ -87,17 +83,6 @@ OBJCOPY_CMD = rust-objcopy \
     -O binary
 
 EXEC_QEMU = $(QEMU_BINARY) -M $(QEMU_MACHINE_TYPE)
-
-##------------------------------------------------------------------------------
-## Dockerization
-##------------------------------------------------------------------------------
-DOCKER_CMD          = docker run -t --rm -v "/home/tmp" -w "/home/tmp"
-DOCKER_CMD_INTERACT = $(DOCKER_CMD) -i
-
-# DOCKER_IMAGE defined in include file (see top of this file).
-DOCKER_QEMU  = $(DOCKER_CMD_INTERACT) $(DOCKER_IMAGE)
-DOCKER_TOOLS = $(DOCKER_CMD) $(DOCKER_IMAGE)
-
 
 
 ##--------------------------------------------------------------------------------------------------
@@ -172,14 +157,14 @@ clean:
 ##------------------------------------------------------------------------------
 readelf: $(KERNEL_ELF)
 	$(call color_header, "Launching readelf")
-	@$(DOCKER_TOOLS) $(READELF_BINARY) --headers $(KERNEL_ELF)
+	$(READELF_BINARY) --headers $(KERNEL_ELF)
 
 ##------------------------------------------------------------------------------
 ## Run objdump
 ##------------------------------------------------------------------------------
 objdump: $(KERNEL_ELF)
 	$(call color_header, "Launching objdump")
-	@$(DOCKER_TOOLS) $(OBJDUMP_BINARY) --disassemble --demangle \
+	$(OBJDUMP_BINARY) --disassemble --demangle \
                 --section .text   \
                 $(KERNEL_ELF) | rustfilt
 
@@ -188,5 +173,5 @@ objdump: $(KERNEL_ELF)
 ##------------------------------------------------------------------------------
 nm: $(KERNEL_ELF)
 	$(call color_header, "Launching nm")
-	@$(DOCKER_TOOLS) $(NM_BINARY) --demangle --print-size $(KERNEL_ELF) | sort | rustfilt
+	$(NM_BINARY) --demangle --print-size $(KERNEL_ELF) | sort | rustfilt
 

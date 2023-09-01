@@ -10,3 +10,4 @@ build/
 *.img
 *.bin
 .vscode-ctags
+target

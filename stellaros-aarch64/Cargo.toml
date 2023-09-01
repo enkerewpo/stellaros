@@ -8,15 +8,23 @@ lto = true
 
 [features]
 default = []
-bsp_rpi3 = []
-bsp_rpi4 = []
+bsp_rpi3 = ["tock-registers"]
+bsp_rpi4 = ["tock-registers"]
 
 [[bin]]
-name = "stellaros-kernel-aarch64"
+name = "kernel"
 path = "src/main.rs"
+
+##--------------------------------------------------------------------------------------------------
+## Dependencies
+##--------------------------------------------------------------------------------------------------
 
 [dependencies]
 
+# Optional dependencies
+tock-registers = { version = "0.8.x", default-features = false, features = [
+    "register_types",
+], optional = true }
 
 # Platform specific dependencies
 [target.'cfg(target_arch = "aarch64")'.dependencies]

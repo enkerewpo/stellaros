@@ -1,6 +1,7 @@
 ## SPDX-License-Identifier: MIT OR Apache-2.0
 ##
 ## Copyright (c) 2018-2022 Andre Richter <andre.o.richter@gmail.com>
+## Modified 2023 by wheatfox
 
 include ../common/docker.mk
 include ../common/format.mk
@@ -14,7 +15,6 @@ include ../common/operating_system.mk
 BSP ?= rpi3
 
 
-
 ##--------------------------------------------------------------------------------------------------
 ## BSP-specific configuration values
 ##--------------------------------------------------------------------------------------------------
@@ -25,7 +25,7 @@ ifeq ($(BSP),rpi3)
     KERNEL_BIN        = stellaros-kenrel-raspi3b.img
     QEMU_BINARY       = qemu-system-aarch64
     QEMU_MACHINE_TYPE = raspi3b
-    QEMU_RELEASE_ARGS = -d in_asm -display none
+    QEMU_RELEASE_ARGS = -display none # -d in_asm
     OBJDUMP_BINARY    = aarch64-none-elf-objdump
     NM_BINARY         = aarch64-none-elf-nm
     READELF_BINARY    = aarch64-none-elf-readelf
@@ -166,6 +166,7 @@ objdump: $(KERNEL_ELF)
 	$(call color_header, "Launching objdump")
 	$(OBJDUMP_BINARY) --disassemble --demangle \
                 --section .text   \
+                --section .rodata \
                 $(KERNEL_ELF) | rustfilt
 
 ##------------------------------------------------------------------------------

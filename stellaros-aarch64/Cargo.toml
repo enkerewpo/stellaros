@@ -16,3 +16,8 @@ name = "stellaros-kernel-aarch64"
 path = "src/main.rs"
 
 [dependencies]
+
+
+# Platform specific dependencies
+[target.'cfg(target_arch = "aarch64")'.dependencies]
+aarch64-cpu = { version = "9.x.x" }

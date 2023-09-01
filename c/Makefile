@@ -24,3 +24,4 @@ stellaros-kernel.img: $(OFILES)
 
 clean:
 	/bin/rm $(BUILD_DIR)/stellaros-kernel.elf $(BUILD_DIR)/stellaros-kernel.img 2>/dev/null || true
+	

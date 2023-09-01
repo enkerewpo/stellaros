@@ -1,0 +1,1 @@
+{"rustc":10756384065172441245,"features":"","target":0,"profile":0,"path":0,"deps":[[3772339996921517096,"build_script_build",false,5029642303021074444]],"local":[{"RerunIfChanged":{"output":"aarch64-unknown-none-softfloat/release/build/mingo-5194c2e4796048e6/output","paths":["src/bsp/raspberrypi/kernel.ld"]}}],"rustflags":[],"metadata":0,"config":0,"compile_kind":0}

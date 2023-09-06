@@ -28,3 +28,51 @@ macro_rules! println {
         $crate::print::_print(format_args_nl!($($arg)*));
     })
 }
+
+/// Prints an info, with a newline.
+#[macro_export]
+macro_rules! info {
+    ($string:expr) => ({
+        let timestamp = $crate::timer::timer().uptime();
+
+        $crate::print::_print(format_args_nl!(
+            concat!("[  {:>3}.{:06} | INFO ] ", $string),
+            timestamp.as_secs(),
+            timestamp.subsec_micros(),
+        ));
+    });
+    ($format_string:expr, $($arg:tt)*) => ({
+        let timestamp = $crate::timer::timer().uptime();
+
+        $crate::print::_print(format_args_nl!(
+            concat!("[  {:>3}.{:06} | INFO ] ", $format_string),
+            timestamp.as_secs(),
+            timestamp.subsec_micros(),
+            $($arg)*
+        ));
+    })
+}
+
+/// Prints a warning, with a newline.
+#[macro_export]
+macro_rules! warn {
+    ($string:expr) => ({
+        let timestamp = $crate::timer::timer().uptime();
+
+        $crate::print::_print(format_args_nl!(
+            concat!("[W {:>3}.{:06} | WARNING ] ", $string),
+            timestamp.as_secs(),
+            timestamp.subsec_micros(),
+        ));
+    });
+    ($format_string:expr, $($arg:tt)*) => ({
+        let timestamp = $crate::timer::timer().uptime();
+
+        $crate::print::_print(format_args_nl!(
+            concat!("[W {:>3}.{:06} | WARNING ] ", $format_string),
+            timestamp.as_secs(),
+            timestamp.subsec_micros(),
+            $($arg)*
+        ));
+    })
+}

@@ -1,18 +1,24 @@
+// These are all the features that are used in the project
 #![allow(clippy::upper_case_acronyms)]
 #![feature(asm_const)]
 #![feature(format_args_nl)]
+#![feature(const_option)]
 #![feature(panic_info_message)]
 #![feature(trait_alias)]
+#![feature(unchecked_math)]
 #![no_main]
 #![no_std]
 
+// modules
 mod bsp;
 mod console;
 mod cpu;
 mod driver;
 mod panic_wait;
 mod print;
+mod shell;
 mod synchronization;
+mod timer;
 
 /// Early init code.
 ///
@@ -45,26 +51,16 @@ fn kernel_main() -> ! {
     print!("  ____) | ||  __/ | | (_| | |  | |__| |____) |\n");
     print!(" |_____/ \\__\\___|_|_|\\__,_|_|   \\____/|_____/\n");
 
-    println!(
-        "[INFO] (kernel_main): {} version {}",
+    info!(
+        "(kernel_main): {} version {}",
         env!("CARGO_PKG_NAME"),
         env!("CARGO_PKG_VERSION")
     );
-    println!("[INFO] (kernel_main): Booting on: {}", bsp::board_name());
-
-    println!("[INFO] (kernel_main): Drivers loaded:");
+    info!("(kernel_main): Booting on: {}", bsp::board_name());
+    info!("(kernel_main): Drivers loaded:");
     driver::driver_manager().enumerate();
 
-    println!(
-        "[INFO] (kernel_main): Chars written: {}",
-        console().chars_written()
-    );
-    println!("[INFO] (kernel_main): Echoing input now");
-
-    // Discard any spurious received characters before going into echo mode.
+    info!("(kernel_main): Entering shell ...");
     console().clear_rx();
-    loop {
-        let c = console().read_char();
-        console().write_char(c);
-    }
+    shell::main_loop()
 }

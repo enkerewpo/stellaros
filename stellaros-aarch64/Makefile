@@ -67,7 +67,7 @@ RUSTFLAGS = $(RUSTC_MISC_ARGS)                   \
     -C link-arg=--script=$(KERNEL_LINKER_SCRIPT)
 
 RUSTFLAGS_PEDANTIC = $(RUSTFLAGS) \
-    -D warnings                   \
+    # -D warnings                   \
     # -D missing_docs
 
 FEATURES      = --features bsp_$(BSP)

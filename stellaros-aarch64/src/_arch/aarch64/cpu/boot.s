@@ -36,6 +36,11 @@ _start:
 	// Set the stack pointer.
 	ADR_REL	x0, __boot_core_stack_end_exclusive
 	mov	sp, x0
+	ADR_REL	x1, FREQ
+	mrs	x2, CNTFRQ_EL0
+	cmp	x2, xzr
+	b.eq	.L_parking_loop
+	str	w2, [x1]
 
 	// Jump to Rust code.
 	b	_start_rust
